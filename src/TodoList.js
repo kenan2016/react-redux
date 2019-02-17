@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import { Button, Input, List } from 'antd';
 // 引入antd 样式
 import 'antd/dist/antd.css';
 // 从数据仓库里引入store
@@ -8,7 +7,8 @@ import store from './store/index'  // 如果你要引入的是 index这个文件
 // 引入actiontype常量
 // import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM} from './store/actionType'
 import { getInputChangeAction, getAddItemAction, getDeleteItemAction } from './store/actionCreator'
-
+import TodoListUI from './TodoListUI'
+import { getTodoList } from './store/actionCreator'
 // const data = [
 //     'Racing car sprays burning fuel into crowd.',
 //     'Japanese princess to wed commoner.',
@@ -23,6 +23,7 @@ class TodoList extends Component {
         this.handleInputchange = this.handleInputchange.bind(this)
         this.handleStoreChange = this.handleStoreChange.bind(this)
         this.handleBtnClick = this.handleBtnClick.bind(this)
+        this.handleItemDelete = this.handleItemDelete.bind(this)
         this.state = store.getState() // 其实数据的来源来自于store
         console.log(store.getState())
         // 订阅store:当store发生变化的时候会自动执行一下传进subscribe里的回调函数
@@ -56,21 +57,29 @@ class TodoList extends Component {
     }
     render() {
         return (
-                <div>
-                    <div style={{marginLeft: 10, marginTop: 10}}>
-                        <Input value={this.state.inputValue} placeholder='this is placeholder' style={{width:300, marginRight:10}}
-                            onChange={this.handleInputchange}
-                        />
-                        <Button type="primary" onClick={this.handleBtnClick}>提交</Button>
-                    </div>
-                    <List
-                        style={{width: 300}}
-                        bordered
-                        dataSource={this.state.list}
-                        renderItem={(item, index) => (<List.Item onClick={this.handleItemDelete.bind(this, index)}>{item}</List.Item>)}
-                        />
-                </div>
+            <TodoListUI inputValue={this.state.inputValue}
+            handleInputchange={this.handleInputchange}
+            handleBtnClick={this.handleBtnClick}
+            list={this.state.list}
+            handleItemDelete = {this.handleItemDelete}/>
         )
+    }
+
+    componentDidMount() {
+        const action = getTodoList()// 这里函数的返回值是一个函数
+        store.dispatch(action)// 这里才执行函数
+        //console.log(action)
+        // axios.get('/api/products2').then((res)=>{
+        //     const data = res.data.products
+        //     // 要将数据传给store（要改变store里面的数据，
+        //     //需要先将数据传到reducer里面然后传回来，又由store捕获最新的store，而不是直接改变里面的值）
+        //     // 先创建action
+        //     const action = initListAction(data)
+        //     store.dispatch(action)
+        // }).catch((e)=> {
+
+        // })
+        // 使用了 redux-thunk 以后可以将一部请求写到action文件里，
     }
 }
 

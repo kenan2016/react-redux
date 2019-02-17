@@ -1,10 +1,10 @@
 // 引入action常量
-import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM} from './actionType'
+import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM, INIT_LIST_ACTION} from './actionType'
 
 // 创建笔记本
 const defaultState = { // state 数据初始化
     inputValue: '123',
-    list:[1, 2, 3]
+    list:[]
 }
 
 // !!注意：reducer 可以接受state 但是绝对不可以直接修改state，
@@ -32,6 +32,13 @@ export default (state = defaultState, action) => {
     if(action.type === DELETE_TODO_ITEM) {
         const newState = JSON.parse(JSON.stringify(state))
         newState.list.splice(action.index, 1)
+        return newState
+    }
+
+    if(action.type === INIT_LIST_ACTION) {
+        const newState = JSON.parse(JSON.stringify(state))
+        newState.list = action.data
+        console.log(action.data)
         return newState
     }
     // 这是一个固定的写法   
